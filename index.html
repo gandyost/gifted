@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출결 현황 조회</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+	#name, #phone {
+		width: 380px;
+	}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>영재원 결석 조회</h2>
+    <label for="name">이름을 입력하세요:</label>
+    <input type="text" id="name" placeholder="예: 홍길동">
+    <br>
+    <label for="phone">전화번호를 입력하세요:</label>
+    <input type="text" id="phone" placeholder="- 없이 입력, 예: 01012345678">
+    
+    <button onclick="searchAttendance()">조회하기</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    // Google Sheets API 키
+    const API_KEY = 'AIzaSyCXPyV5O8vEy7iYlTDmDPX6NMjPtuWuIlA'; // 여기에 API 키를 입력
+    // 스프레드시트 ID
+    const SPREADSHEET_ID = '17UiJLJNC_e8qROPbX52umG0j1zrn_j6T3M0CEgGIbHI'; // 여기에 스프레드시트 ID를 입력
+    // 데이터 가져올 시트와 범위 설정 (모든 데이터를 가져옴)
+    const RANGE = 'Sheet1!A2:C'; // 이름, 전화번호, 출결 현황 데이터가 있는 범위
+
+    // Google Sheets API URL
+    const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+
+    // 사용자가 입력한 이름과 전화번호를 기준으로 출결 현황을 조회하는 함수
+    async function searchAttendance() {
+        const nameInput = document.getElementById('name').value;
+        const phoneInput = document.getElementById('phone').value;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            const sheetData = data.values;
+
+            // 입력한 이름과 전화번호가 일치하는 데이터를 찾음
+            const user = sheetData.find(row => row[0] === nameInput && row[1] === phoneInput);
+
+            const resultDiv = document.getElementById('result');
+            
+            if (user) {
+                resultDiv.innerHTML = `<p>이름: ${user[0]}</p><p>출결 현황: ${user[2]}</p>`;
+                resultDiv.style.color = 'black';
+            } else {
+                resultDiv.innerHTML = '이름과 전화번호가 일치하지 않습니다.';
+                resultDiv.style.color = 'red';
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+</script>
+
+</body>
+</html>
