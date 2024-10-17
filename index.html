@@ -86,7 +86,7 @@
     <label for="name">이름을 입력하세요:</label>
     <input type="text" id="name" placeholder="예: 홍길동">
     <br>
-    <label for="phone">전화번호를 입력하세요:</label>
+    <label for="phone">영재 지원 시 입력한 학부모 전화번호를 입력하세요:</label>
     <input type="text" id="phone" placeholder="- 없이 입력, 예: 01012345678">
     
     <button onclick="searchAttendance()">조회하기</button>
@@ -100,7 +100,7 @@
     // 스프레드시트 ID
     const SPREADSHEET_ID = '17UiJLJNC_e8qROPbX52umG0j1zrn_j6T3M0CEgGIbHI'; // 여기에 스프레드시트 ID를 입력
     // 데이터 가져올 시트와 범위 설정 (모든 데이터를 가져옴)
-    const RANGE = 'Sheet1!A2:C'; // 이름, 전화번호, 출결 현황 데이터가 있는 범위
+    const RANGE = 'Sheet1!A2:F'; // 이름, 전화번호, 출결 현황 데이터가 있는 범위
 
     // Google Sheets API URL
     const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`;
@@ -121,7 +121,7 @@
             const resultDiv = document.getElementById('result');
             
             if (user) {
-                resultDiv.innerHTML = `<p>이름: ${user[0]}</p><p>출결 현황: ${user[2]}</p>`;
+                resultDiv.innerHTML = `<p>이름: ${user[0]}</p><p>결석: ${user[2]}</p><p>조퇴: ${user[3]}</p><p>지각: ${user[4]}</p><p>빠진 시간: ${user[5]}</p><p>18시간을 초과한 경우 수료가 불가합니다.</p>`;
                 resultDiv.style.color = 'black';
             } else {
                 resultDiv.innerHTML = '이름과 전화번호가 일치하지 않습니다.';
